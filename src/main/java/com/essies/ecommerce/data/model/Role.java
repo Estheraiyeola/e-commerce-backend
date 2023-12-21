@@ -1,2 +1,9 @@
-package com.essies.ecommerce.data.model;public enum Role {
+package com.essies.ecommerce.data.model;
+
+import lombok.Getter;
+
+@Getter
+public enum Role {
+    USER,
+    ADMIN;
 }

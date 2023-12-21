@@ -1,4 +1,88 @@
 package com.essies.ecommerce.service;
 
-public class AdminServiceImpl {
+import com.essies.ecommerce.data.model.Admin;
+import com.essies.ecommerce.data.model.Inventory;
+import com.essies.ecommerce.data.model.Product;
+import com.essies.ecommerce.data.repository.AdminRepository;
+import com.essies.ecommerce.dto.request.AddProductRequest;
+import com.essies.ecommerce.dto.request.CreateCategoryRequest;
+import com.essies.ecommerce.dto.request.RegisterAdminRequest;
+import com.essies.ecommerce.dto.response.AddedProductResponse;
+import com.essies.ecommerce.dto.response.AllProductsInA_CategoryResponse;
+import com.essies.ecommerce.dto.response.CreatedCategoryResponse;
+import com.essies.ecommerce.dto.response.RegisterAdminResponse;
+import com.essies.ecommerce.exception.AdminAlreadyExistsException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static com.essies.ecommerce.util.Mapper.map;
+
+@Service
+public class AdminServiceImpl implements AdminService{
+    @Autowired
+    private AdminRepository adminRepository;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private InventoryService inventoryService;
+
+    @Override
+    public RegisterAdminResponse registerAdmin(RegisterAdminRequest registerAdminRequest) {
+        Admin foundAdmin = adminRepository.findByEmail(registerAdminRequest.getEmail());
+        if(foundAdmin == null){
+            Admin admin = map(registerAdminRequest);
+            adminRepository.save(admin);
+
+            RegisterAdminResponse registerAdminResponse = new RegisterAdminResponse();
+            registerAdminResponse.setEmail(admin.getEmail());
+            registerAdminResponse.setPassword(admin.getPassword());
+            registerAdminResponse.setUsername(admin.getUsername());
+            registerAdminResponse.setStatus("Successful");
+            registerAdminResponse.setRole(admin.getRole());
+            return registerAdminResponse;
+        }
+        throw new AdminAlreadyExistsException("Admin already exists");
+    }
+
+    @Override
+    public CreatedCategoryResponse createCategory(CreateCategoryRequest categoryRequest) {
+        CreatedCategoryResponse response = categoryService.createCategory(categoryRequest);
+        return response;
+    }
+
+    @Override
+    public AddedProductResponse addProduct(AddProductRequest addProductRequest) {
+        return productService.addProduct(addProductRequest);
+    }
+
+    @Override
+    public AllProductsInA_CategoryResponse getAllProductsInACategory(String category) {
+        return productService.getProductsInA_Category(category);
+    }
+
+    @Override
+    public Inventory findByProductId(Long id) {
+        return inventoryService.findByProductId(id);
+    }
+
+    @Override
+    public List<Inventory> getInventory() {
+        return inventoryService.getAllInventory();
+    }
+
+    @Override
+    public void removeProduct(String name) {
+        productService.removeProduct(name);
+    }
+
+    @Override
+    public Product findProduct(String name) {
+        return null;
+    }
+
+
 }

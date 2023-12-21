@@ -1,4 +1,10 @@
 package com.essies.ecommerce.service;
 
-public class AddressService {
+import com.essies.ecommerce.data.model.Address;
+import com.essies.ecommerce.data.model.User;
+
+public interface AddressService {
+    Address addAddress(Address address, User user);
+
+    void deleteAll();
 }

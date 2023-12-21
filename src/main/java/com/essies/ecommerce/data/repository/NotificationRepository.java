@@ -1,6 +1,7 @@
 package com.essies.ecommerce.data.repository;
 
+import com.essies.ecommerce.data.model.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface Notification extends JpaRepository<Notification, Long> {
+public interface NotificationRepository extends JpaRepository<Notification, Long> {
 }

@@ -1,4 +1,7 @@
 package com.essies.ecommerce.exception;
 
-public class AdminAlreadyExistsException {
+public class AdminAlreadyExistsException extends EssiesEcommerceException{
+    public AdminAlreadyExistsException(String message) {
+        super(message);
+    }
 }

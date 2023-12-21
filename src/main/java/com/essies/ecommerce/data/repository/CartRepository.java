@@ -1,6 +1,8 @@
 package com.essies.ecommerce.data.repository;
 
+import com.essies.ecommerce.data.model.Cart;
+import com.essies.ecommerce.data.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface Cart extends JpaRepository<Cart, Long> {
+public interface CartRepository extends JpaRepository<Cart, Long> {
 }
