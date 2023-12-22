@@ -2,8 +2,12 @@ package com.essies.ecommerce.service;
 
 import com.essies.ecommerce.data.model.*;
 import com.essies.ecommerce.data.repository.OrderRepository;
+import com.essies.ecommerce.dto.response.ProcessOrderResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService{
@@ -29,5 +33,26 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public void deleteAll() {
         orderRepository.deleteAll();
+    }
+
+    @Override
+    public Order findOrder(Long orderId) {
+        return orderRepository.findOrderById(orderId);
+    }
+
+    @Override
+    public List<Order> checkListOfOrders() {
+        return orderRepository.findAll();
+    }
+
+    @Override
+    public ProcessOrderResponse processOrder(Long orderId) {
+        Order order = orderRepository.findOrderById(orderId);
+        order.setStatus(OrderStatus.COMPLETED_ADMIN);
+
+        ProcessOrderResponse orderResponse = new ProcessOrderResponse();
+        orderResponse.setMessage("Order would be with user soon");
+        orderResponse.setDateProcessed(LocalDateTime.now());
+        return orderResponse;
     }
 }

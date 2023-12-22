@@ -2,34 +2,30 @@ package com.essies.ecommerce.service;
 
 import com.essies.ecommerce.data.model.Admin;
 import com.essies.ecommerce.data.model.Inventory;
+import com.essies.ecommerce.data.model.Order;
 import com.essies.ecommerce.data.model.Product;
 import com.essies.ecommerce.data.repository.AdminRepository;
 import com.essies.ecommerce.dto.request.AddProductRequest;
 import com.essies.ecommerce.dto.request.CreateCategoryRequest;
 import com.essies.ecommerce.dto.request.RegisterAdminRequest;
-import com.essies.ecommerce.dto.response.AddedProductResponse;
-import com.essies.ecommerce.dto.response.AllProductsInA_CategoryResponse;
-import com.essies.ecommerce.dto.response.CreatedCategoryResponse;
-import com.essies.ecommerce.dto.response.RegisterAdminResponse;
+import com.essies.ecommerce.dto.response.*;
 import com.essies.ecommerce.exception.AdminAlreadyExistsException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static com.essies.ecommerce.util.Mapper.map;
-
+@AllArgsConstructor
 @Service
 public class AdminServiceImpl implements AdminService{
-    @Autowired
-    private AdminRepository adminRepository;
-    @Autowired
-    private CategoryService categoryService;
-    @Autowired
-    private ProductService productService;
-    @Autowired
-    private InventoryService inventoryService;
+    private final AdminRepository adminRepository;
+    private final CategoryService categoryService;
+    private final ProductService productService;
 
+    private final InventoryService inventoryService;
+    private final OrderService orderService;
     @Override
     public RegisterAdminResponse registerAdmin(RegisterAdminRequest registerAdminRequest) {
         Admin foundAdmin = adminRepository.findByEmail(registerAdminRequest.getEmail());
@@ -81,7 +77,17 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public Product findProduct(String name) {
-        return null;
+        return productService.findProduct(name);
+    }
+
+    @Override
+    public List<Order> checkListOfOrders() {
+        return orderService.checkListOfOrders();
+    }
+
+    @Override
+    public ProcessOrderResponse processOrder(Long orderId) {
+        return orderService.processOrder(orderId);
     }
 
 

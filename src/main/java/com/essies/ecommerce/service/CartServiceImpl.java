@@ -60,7 +60,7 @@ public class CartServiceImpl implements CartService{
 
         Order order = new Order();
         order.setOrderDate(cart.getDateCreated());
-        order.setStatus(OrderStatus.PENDING_USER);
+        order.setStatus(OrderStatus.COMPLETED_USER);
         order.setBillingAddressId(user.getAddress().getId());
         order.setTotalAmount(cart.getTotal());
         order.setShippingAddressId(user.getAddress().getId());

@@ -1,8 +1,6 @@
 package com.essies.ecommerce.service;
 
-import com.essies.ecommerce.data.model.Category;
-import com.essies.ecommerce.data.model.Product;
-import com.essies.ecommerce.data.model.Review;
+import com.essies.ecommerce.data.model.*;
 import com.essies.ecommerce.data.repository.ProductRepository;
 import com.essies.ecommerce.dto.request.AddProductRequest;
 import com.essies.ecommerce.dto.request.CreateInventoryRequest;
@@ -11,8 +9,9 @@ import com.essies.ecommerce.dto.response.AddedProductResponse;
 import com.essies.ecommerce.dto.response.AllProductsInA_CategoryResponse;
 import com.essies.ecommerce.dto.response.CreatedInventoryResponse;
 import com.essies.ecommerce.dto.response.ProductReviewResponse;
+import com.essies.ecommerce.exception.ExceededNumberOfReviewPerOrderException;
 import com.essies.ecommerce.exception.ProductAlreadyExistsException;
-import com.essies.ecommerce.exception.ProductDoesNotExistException;
+import com.essies.ecommerce.exception.ProductNotOrderedCannotBeReviewedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -32,6 +32,8 @@ public class ProductServiceImpl implements ProductService {
     private InventoryService inventoryService;
     @Autowired
     private ReviewService reviewService;
+    @Autowired
+    private OrderService orderService;
     @Override
     public AddedProductResponse addProduct(AddProductRequest addProductRequest) {
         Product foundProduct = productRepository.findByName(addProductRequest.getName());
@@ -106,27 +108,44 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductReviewResponse addReview(ProductReviewRequest productReviewRequest, Long userId) {
+    public ProductReviewResponse addReview(ProductReviewRequest productReviewRequest, Long userId, Cart cartResponse) {
         Product product = findProduct(productReviewRequest.getProductName());
-        Review review = new Review();
-        review.setComment(productReviewRequest.getMessage());
-        review.setDate(LocalDateTime.now());
-        review.setRating(productReviewRequest.getRating());
-        review.setUserId(userId);
-        review.setProductId(product.getId());
-        Review savedReview = reviewService.saveReview(review);
+        Order order = orderService.findOrder(cartResponse.getOrderId());
+        OrderItem neededProduct = null;
+        for (OrderItem orderItem:cartResponse.getOrderItems()) {
+            if (Objects.equals(orderItem.getProductId(), product.getId())){
+                neededProduct = orderItem;
+            }
+        }
+        if (neededProduct == null){
+            throw new ProductNotOrderedCannotBeReviewedException("You have not purchased the product you want to review");
+        }
+        if (order.getReviewId() == null && neededProduct != null) {
+            Review review = new Review();
+            review.setComment(productReviewRequest.getMessage());
+            review.setDate(LocalDateTime.now());
+            review.setRating(productReviewRequest.getRating());
+            review.setUserId(userId);
+            review.setProductId(product.getId());
+            review.setOrderId(order.getId());
+            Review savedReview = reviewService.saveReview(review);
 
 
-        double total = review.getRating().getValue();
-        double averageRating = product.getAverageRating();
-        averageRating = (averageRating + total) / 2;
-        product.setAverageRating(averageRating);
+            double total = review.getRating().getValue();
+            double averageRating = product.getAverageRating();
+            averageRating = (averageRating + total) / 2;
+            product.setAverageRating(averageRating);
 
-        productRepository.save(product);
+            productRepository.save(product);
 
-        ProductReviewResponse productReviewResponse = new ProductReviewResponse();
-        productReviewResponse.setMessage("Review Added Successfully");
-        return productReviewResponse;
+            order.setReviewId(savedReview.getId());
+            orderService.saveOrder(order);
+
+            ProductReviewResponse productReviewResponse = new ProductReviewResponse();
+            productReviewResponse.setMessage("Review Added Successfully");
+            return productReviewResponse;
+        }
+        throw new ExceededNumberOfReviewPerOrderException("Exceeded Number of reviews for this order");
     }
 
 

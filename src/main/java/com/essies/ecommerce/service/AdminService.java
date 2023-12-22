@@ -1,14 +1,12 @@
 package com.essies.ecommerce.service;
 
 import com.essies.ecommerce.data.model.Inventory;
+import com.essies.ecommerce.data.model.Order;
 import com.essies.ecommerce.data.model.Product;
 import com.essies.ecommerce.dto.request.AddProductRequest;
 import com.essies.ecommerce.dto.request.CreateCategoryRequest;
 import com.essies.ecommerce.dto.request.RegisterAdminRequest;
-import com.essies.ecommerce.dto.response.AddedProductResponse;
-import com.essies.ecommerce.dto.response.AllProductsInA_CategoryResponse;
-import com.essies.ecommerce.dto.response.CreatedCategoryResponse;
-import com.essies.ecommerce.dto.response.RegisterAdminResponse;
+import com.essies.ecommerce.dto.response.*;
 
 import java.util.List;
 
@@ -28,4 +26,8 @@ public interface AdminService {
     void removeProduct(String name);
 
     Product findProduct(String name);
+
+    List<Order> checkListOfOrders();
+
+    ProcessOrderResponse processOrder(Long orderId);
 }

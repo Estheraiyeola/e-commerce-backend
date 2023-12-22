@@ -7,13 +7,11 @@ import com.essies.ecommerce.dto.request.ProductReviewRequest;
 import com.essies.ecommerce.dto.request.RegisterUserRequest;
 import com.essies.ecommerce.dto.response.ProductReviewResponse;
 import com.essies.ecommerce.dto.response.RegisteredUserResponse;
-import com.essies.ecommerce.dto.response.RemovedProductsCartResponse;
-import jakarta.transaction.Transactional;
+import com.essies.ecommerce.exception.ProductNotOrderedCannotBeReviewedException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -80,7 +78,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public ProductReviewResponse productReview(ProductReviewRequest productReviewRequest, Long userId) {
-        return productService.addReview(productReviewRequest, userId);
+    public ProductReviewResponse productReview(ProductReviewRequest productReviewRequest, Long userId, Cart cartResponse){
+        return productService.addReview(productReviewRequest, userId, cartResponse);
     }
 }

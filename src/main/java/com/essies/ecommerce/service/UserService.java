@@ -8,7 +8,6 @@ import com.essies.ecommerce.dto.request.ProductReviewRequest;
 import com.essies.ecommerce.dto.request.RegisterUserRequest;
 import com.essies.ecommerce.dto.response.ProductReviewResponse;
 import com.essies.ecommerce.dto.response.RegisteredUserResponse;
-import com.essies.ecommerce.dto.response.RemovedProductsCartResponse;
 
 import java.util.List;
 
@@ -26,5 +25,5 @@ public interface UserService {
 
     List<Cart> removeProductFromCartBy(String productName);
 
-    ProductReviewResponse productReview(ProductReviewRequest productReviewRequest, Long userId);
+    ProductReviewResponse productReview(ProductReviewRequest productReviewRequest, Long userId, Cart cartResponse);
 }
