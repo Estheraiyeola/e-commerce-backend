@@ -9,17 +9,24 @@ import com.essies.ecommerce.dto.response.ProductReviewResponse;
 import com.essies.ecommerce.dto.response.RegisteredUserResponse;
 import com.essies.ecommerce.exception.ProductNotOrderedCannotBeReviewedException;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+
 public class UserServiceImpl implements UserService{
-    private final AddressService addressService;
-    private final UserRepository userRepository;
-    private final ProductService productService;
+    @Autowired
+    private AddressService addressService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ProductService productService;
     private final CartService cartService;
     @Override
     public RegisteredUserResponse registerUser(RegisterUserRequest registerUserRequest) {
@@ -80,5 +87,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public ProductReviewResponse productReview(ProductReviewRequest productReviewRequest, Long userId, Cart cartResponse){
         return productService.addReview(productReviewRequest, userId, cartResponse);
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }

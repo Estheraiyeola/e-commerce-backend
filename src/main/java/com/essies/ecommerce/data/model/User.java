@@ -22,5 +22,6 @@ public class User {
     private String phoneNumber;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
+    @Enumerated(EnumType.STRING)
     private Role role;
 }

@@ -10,6 +10,7 @@ import com.essies.ecommerce.dto.response.ProductReviewResponse;
 import com.essies.ecommerce.dto.response.RegisteredUserResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     RegisteredUserResponse registerUser(RegisterUserRequest registerUserRequest);
@@ -26,4 +27,6 @@ public interface UserService {
     List<Cart> removeProductFromCartBy(String productName);
 
     ProductReviewResponse productReview(ProductReviewRequest productReviewRequest, Long userId, Cart cartResponse);
+
+    Optional<User> findByUsername(String username);
 }

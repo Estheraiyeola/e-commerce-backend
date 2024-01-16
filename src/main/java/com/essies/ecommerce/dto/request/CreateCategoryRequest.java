@@ -8,4 +8,5 @@ import lombok.Setter;
 public class CreateCategoryRequest {
     private String name;
     private String description;
+
 }

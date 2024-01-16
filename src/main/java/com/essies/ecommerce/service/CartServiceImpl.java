@@ -6,6 +6,7 @@ import com.essies.ecommerce.dto.request.AddToCartRequest;
 import com.essies.ecommerce.exception.ProductDoesNotExistException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,11 +23,13 @@ public class CartServiceImpl implements CartService{
     @Autowired
     private OrderService orderService;
     @Autowired
+    @Lazy
     private UserService userService;
     @Autowired
     private OrderItemService orderItemService;
     @Autowired
     private OrderHistoryService orderHistoryService;
+
     @Autowired
     public  CartServiceImpl(OrderService orderService){
         this.orderService = orderService;

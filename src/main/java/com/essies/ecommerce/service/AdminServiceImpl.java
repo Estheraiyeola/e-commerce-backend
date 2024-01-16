@@ -10,16 +10,21 @@ import com.essies.ecommerce.dto.request.CreateCategoryRequest;
 import com.essies.ecommerce.dto.request.RegisterAdminRequest;
 import com.essies.ecommerce.dto.response.*;
 import com.essies.ecommerce.exception.AdminAlreadyExistsException;
+import com.essies.ecommerce.security.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static com.essies.ecommerce.util.Mapper.map;
 @AllArgsConstructor
 @Service
-public class AdminServiceImpl implements AdminService{
+public class AdminServiceImpl implements AdminService {
     private final AdminRepository adminRepository;
     private final CategoryService categoryService;
     private final ProductService productService;
@@ -46,6 +51,7 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public CreatedCategoryResponse createCategory(CreateCategoryRequest categoryRequest) {
+
         CreatedCategoryResponse response = categoryService.createCategory(categoryRequest);
         return response;
     }
@@ -88,6 +94,16 @@ public class AdminServiceImpl implements AdminService{
     @Override
     public ProcessOrderResponse processOrder(Long orderId) {
         return orderService.processOrder(orderId);
+    }
+
+    @Override
+    public Admin findAdminByEmail(String userEmail) {
+        return adminRepository.findByEmail(userEmail);
+    }
+
+    @Override
+    public Optional<Admin> findByUsername(String username) {
+        return adminRepository.findByUsername(username);
     }
 
 
